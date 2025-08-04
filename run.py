@@ -21,7 +21,7 @@ for idx, task in tasks_df.itrerrows():
     effort = task["Effort Required"]
     task_dict["Difficulty"] = difficulty
     task_dict["Effort"] = effort
-    tasks_dict["ID"] = task_dict
+    tasks_dict[task_id] = task_dict
     
 for sess_id in unique_sessions:
     sub_df = decisions_df[decisions_df["Session ID"] == sess_id]
@@ -30,16 +30,21 @@ for sess_id in unique_sessions:
     agent_task_dict = dict()
     level = session_data["Game Level"]
     level_data = game_levels_df[game_levels_df["Level"] == level]
+
     productivity_discount = level_data["Average Worker Agent Productivity Output Rate"]
     level_svq = level_data["Speed vs. Quality Trade-off (SvQ)"]
     for r in rounds:
         round_df = sub_df[sub_df["Round"] == r]
+        agents_tasks_quality = dict()
         for idx, row in round_df.iterrows():
+            agent_tasks_quality = dict()
             worker_agent_id = row["Worker Agent ID"]
-            worker_agent = workers_df[workers_df["ID"] == worker_agent_id]
             agent_effort_units = row["Worker Agent Backlog (No. of Effort Units)"]
             agent_tasks_to_complete = set(row["The Backlog Queue"].split(";"))
             agent_reputation = round(row["Worker Agent Reputation"], 1)
+
+            worker_agent = workers_df[workers_df["ID"] == worker_agent_id].iloc[0]
+            
             agent_high_quality_output_prob = worker_agent["High Quality Output Probability"]
             agent_max_load = worker_agent["Max Productivity (No. of Effort Units per Round)"]
             scaled_max_load = agent_max_load * productivity_discount
@@ -53,9 +58,19 @@ for sess_id in unique_sessions:
                 new_tasks = agent_tasks_to_complete.difference(old_tasks)
             else:
                 new_tasks = agent_tasks_to_complete
-                
             agent_task_dict[worker_agent_id] = agent_tasks_to_complete
-    
+
+            for task in agent_tasks_to_complete:
+                task_diff = tasks_dict[task]["Difficulty"]
+                if agent_high_quality_output_prob >= task_diff:
+                    agent_tasks_quality[task] = True
+                else:
+                    agent_tasks_quality[task] = False
+            agents_tasks_quality[worker_agent_id] = agent_tasks_quality
+        # state program
+        with tempfile.NamedTemporaryFile() as fp:
+            fp.write(bytes(f"c1 = (percept-node round :value \"{r}\")", "utf-8"))
+            fp.write(bytes(f"c2 = (percept-node level_svq :value \"{level_svq}\")", "utf-8"))
 def setup_hems():
     # get a handle to the lisp subprocess with quicklisp loaded.
     lisp = cl4py.Lisp(cmd=('sbcl', '--dynamic-space-size', '30000',
