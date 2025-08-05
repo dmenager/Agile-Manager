@@ -5,6 +5,16 @@ from cl4py import Symbol
 import numpy as np
 import pandas as pd
 
+def print_file(fp_name):
+    with open(fp_name, "r") as f: # 1.1.1, 1.2.2
+        # Read the entire content of the file
+        content = f.read() # 1.4.1, 1.3.1
+        
+        # Print the content to the console
+        print(f"File: {fp_name}")
+        print(content) # 1.6.1, 1.2.2
+        print()
+
 def get_session_data(hems):
     DATA_PATH = "~/Code/Data/AgileManager"
     state_file = "state.hems"
@@ -44,9 +54,6 @@ def get_session_data(hems):
         c = 0
         d = 0
         e = 0
-        fp = open(state_file, 'w', encoding="utf-8")
-        obs_fp = open(observation_file, 'w', encoding="utf-8")
-        act_fp = open(action_file, 'w', encoding="utf-8")
         
         for r in rounds:
             round_df = sub_df[sub_df["Round"] == r]
@@ -54,6 +61,10 @@ def get_session_data(hems):
             st_bn = None
             obs_bn = None
             act_bn = None
+            fp = open(state_file, 'a', encoding="utf-8")
+            obs_fp = open(observation_file, 'a', encoding="utf-8")
+            act_fp = open(action_file, 'a', encoding="utf-8")
+            
             fp.write(bytes(f"c{c} = (percept-node level_svq :value \"{level_svq}\")", "utf-8"))
             fp.write(bytes(f"c{c} ~ (discrete-uniform :values (\"-1\" \"1\"))", "utf-8"))
             c += 1
@@ -161,6 +172,11 @@ def get_session_data(hems):
             st_bn = hems.compile_program_from_file(fp.name)
             obs_bn = hems.compile_program_from_file(obs_fp.name)
             act_bn = hems.compile_program_from_file(act_fp.name)
+
+            print_file("state.hems")
+            print_file("observation.hems")
+            print_file("action.hems")
+            
             session.append({"state": st_bn, "observation": obs_bn, "action": act_bn})
             os.remove(state_file)
             os.remove(observation_file)
@@ -180,5 +196,5 @@ def setup_hems():
     hems = lisp.find_package("HEMS")
     return hems
 
-hems = setu_hems()
+hems = setup_hems()
 sessions = get_session_data(hems)
