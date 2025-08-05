@@ -61,10 +61,12 @@ def get_session_data(hems):
             fp.write(bytes(f"c{c} ~ (discrete-uniform :values (\"1\" \"2\" \"3\" \"4\"\"5\"\"6\"))", "utf-8"))
             c += 1
             fp.write(bytes(f"c{c} = (percept-node productivity_discount :value \"{productivity_discount}\")", "utf-8"))
+            fp.write(bytes(f"c{c} ~ (discrete-uniform :values (\".81\" \".9\" \"1\"))", "utf-8"))
             c += 1
             fp.write(bytes(f"c{c-2} --> c{c-3}", "utf-8"))
             fp.write(bytes(f"c{c-2} --> c{c-1}", "utf-8"))
             fp.write(bytes(f"c{c} = (percept-node round :value \"{r}\")", "utf-8"))
+            fp.write(bytes(f"c{c} ~ (discrete-uniform :values (\"5\" \"10\"))", "utf-8"))
             c += 1
             for idx, row in round_df.iterrows():
                 agent_tasks_quality = dict()
@@ -94,6 +96,7 @@ def get_session_data(hems):
                 d_agent = d
                 d += 1
                 obs_fp.write(bytes(f"d{d} = (percept-node reputation :value \"{agent_reputation}\")", "utf-8"))
+                obs_fp.write(bytes(f"d{d} ~ (discrete-uniform :values (\".1\" \".2\" \".3\" \".4\" \".5\" \".6\" \".7\"\".8\" \".9\" \"1\"))", "utf-8"))
                 d += 1
                 obs_fp.write(bytes(f"d{d-2} --> d{d-1}", "utf-8"))
                 for task in old_tasks:
@@ -102,8 +105,10 @@ def get_session_data(hems):
                     obs_fp.write(bytes(f"d{d} = (percept-node task_{task} :value \"T\")", "utf-8"))
                     d += 1
                     obs_fp.write(bytes(f"d{d} = (percept-node agent :value \"agent_{worker_agent_id}\")", "utf-8"))
+                    obs_fp.write(bytes(f"d{d} ~ (discrete-uniform :values (\"agent_1\" \"agent_2\" \"agent_3\" \"agent_4\" \"agent_5\" \"agent_6\"\"agent_7\" \"agent_8\" \"agent_9\" \"agent_10\" \"agent_11\" \"agent_12\" \"agent_13\" \"agent_14\" \"agent_15\" \"agent_16\" \"agent_17\" \"agent_18\" \"agent_19\" \"agent_20\")", "utf-8"))
                     d += 1
                     obs_fp.write(bytes(f"d{d} = (percept-node patient :value \"task_{task}\")", "utf-8"))
+                    obs_fp.write(bytes(f"d{d} ~ (discrete-uniform :values (\"task_1\" \"task_2\" \"task_3\" \"task_4\" \"task_5\" \"task_6\" \"task_7\" \"task_8\" \"task_9\" \"task_10\" \"task_11\" \"task_12\" \"task_13\" \"task_14\" \"task_15\" \"task_16\" \"task_17\" \"task_18\" \"task_19\" \"task_20\" \"task_21\" \"task_22\" \"task_23\" \"task_24\" \"task_25\" \"task_26\" \"task_27\" \"task_28\" \"task_29\" \"task_30\"))", "utf-8"))
                     d += 1
                     obs_fp.write(bytes(f"d{d} = (relation-node responsible :value \"T\")", "utf-8"))
                     d += 1
@@ -118,8 +123,10 @@ def get_session_data(hems):
                     act_fp.write(bytes(f"e{e} = (percept-node task_{task} :value \"T\")", "utf-8"))
                     e += 1
                     act_fp.write(bytes(f"e{e} = (percept-node agent :value \"agent_{worker_agent_id}\")", "utf-8"))
+                    act_fp.write(bytes(f"e{e} ~ (discrete-uniform :values (\"agent_1\" \"agent_2\" \"agent_3\" \"agent_4\" \"agent_5\" \"agent_6\"\"agent_7\" \"agent_8\" \"agent_9\" \"agent_10\" \"agent_11\" \"agent_12\" \"agent_13\" \"agent_14\" \"agent_15\" \"agent_16\" \"agent_17\" \"agent_18\" \"agent_19\" \"agent_20\")", "utf-8"))
                     e += 1
                     act_fp.write(bytes(f"e{e} = (percept-node patient :value \"task_{task}\")", "utf-8"))
+                    act_fp.write(bytes(f"e{e} ~ (discrete-uniform :values (\"task_1\" \"task_2\" \"task_3\" \"task_4\" \"task_5\" \"task_6\" \"task_7\" \"task_8\" \"task_9\" \"task_10\" \"task_11\" \"task_12\" \"task_13\" \"task_14\" \"task_15\" \"task_16\" \"task_17\" \"task_18\" \"task_19\" \"task_20\" \"task_21\" \"task_22\" \"task_23\" \"task_24\" \"task_25\" \"task_26\" \"task_27\" \"task_28\" \"task_29\" \"task_30\"))", "utf-8"))
                     e += 1
                     act_fp.write(bytes(f"e{e} = (relation-node assignment :value \"T\")", "utf-8"))
                     e += 1
@@ -138,8 +145,10 @@ def get_session_data(hems):
                 fp.write(bytes(f"c{c} = (percept-node agent_{worker_agent_id} :value \"T\")", "utf-8"))
                 c += 1
                 fp.write(bytes(f"c{c} = (percept-node max_productivity :value \"{agent_max_load}\")", "utf-8"))
+                fp.write(bytes(f"c{c} ~ (discrete-uniform :values (\"11\" \"12\" \"13\" \"14\" \"15\" \"16\" \"17\" \"18\" \"19\" \"20\"))", "utf-8"))
                 c += 1
                 fp.write(bytes(f"c{c} = (percept-node agent_svq :value \"{agent_high_quality_output_prob}\")", "utf-8"))
+                fp.write(bytes(f"c{c} ~ (discrete-uniform :values (\"-1\" \"1\"))", "utf-8"))
                 c += 1
                 fp.write(bytes(f"c{c-3} --> c{c-2}", "utf-8"))
                 fp.write(bytes(f"c{c-3} --> c{c-1}", "utf-8"))
